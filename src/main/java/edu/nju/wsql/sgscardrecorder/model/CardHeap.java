@@ -355,20 +355,22 @@ public class CardHeap {
         Arrays.fill(exposedSuitNum, 0);
     }
 
-    public synchronized void abandonCard(Card toAbandon) {
-        if (!currentHeap.containsKey(toAbandon.getName()))
+    public synchronized void abandonCardFromCurrentHeap(Card toAbandon) {
+        abandonCard(toAbandon, currentHeap, suitNum);
+    }
+
+    public synchronized void abandonCardFromCurrentExposedHeap(Card toAbandon) {
+        abandonCard(toAbandon, currentExposedHeap, exposedSuitNum);
+    }
+
+    private void abandonCard(Card toAbandon, Map<String, List<Card>> heap, int[] sn) {
+        if (!heap.containsKey(toAbandon.getName()))
             return;
-        
-        Card toSelect = findTarget(toAbandon, currentHeap);
+
+        Card toSelect = findTarget(toAbandon, heap);
         if (toSelect != null) {
-            currentHeap.get(toAbandon.getName()).remove(toSelect);
-            suitNum[toSelect.getSuit().ordinal()]--;
-            return;
-        }
-        toSelect = findTarget(toAbandon, currentExposedHeap);
-        if (toSelect != null) {
-            currentExposedHeap.get(toAbandon.getName()).remove(toSelect);
-            exposedSuitNum[toSelect.getSuit().ordinal()]--;
+            heap.get(toAbandon.getName()).remove(toSelect);
+            sn[toSelect.getSuit().ordinal()]--;
         }
     }
 
@@ -385,17 +387,27 @@ public class CardHeap {
     }
 
     public synchronized void exposeCard(Card toExpose) {
-        if (!currentHeap.containsKey(toExpose.getName()))
+        changePlaceOfCard(toExpose, currentHeap, currentExposedHeap, suitNum, exposedSuitNum);
+    }
+
+    public synchronized void hideCard(Card toHide) {
+        changePlaceOfCard(toHide, currentExposedHeap, currentHeap, exposedSuitNum, suitNum);
+    }
+
+    private void changePlaceOfCard(Card card,
+                                   Map<String, List<Card>> fromHeap, Map<String, List<Card>> toHeap,
+                                   int[] fromSuitNum, int[] toSuitNum) {
+        if (!fromHeap.containsKey(card.getName()))
             return;
 
-        Card toSelect = findTarget(toExpose, currentHeap);
+        Card toSelect = findTarget(card, fromHeap);
         if (toSelect != null) {
-            String name = toExpose.getName();
-            currentHeap.get(name).remove(toSelect);
-            currentExposedHeap.get(name).add(toSelect);
+            String name = card.getName();
+            fromHeap.get(name).remove(toSelect);
+            toHeap.get(name).add(toSelect);
             int i = toSelect.getSuit().ordinal();
-            suitNum[i]--;
-            exposedSuitNum[i]++;
+            fromSuitNum[i]--;
+            toSuitNum[i]++;
         }
     }
 

@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Api(tags = "卡牌操作")
 @RestController
+@CrossOrigin(value = "http://localhost:8081", allowCredentials = "true")
 @RequestMapping("/card")
 public class CardController {
 
@@ -36,12 +37,21 @@ public class CardController {
         return cardHeaps.get(id);
     }
 
-    @PutMapping("/{id}/abandon")
+    @PutMapping("/{id}/abandon_current")
     @ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "牌堆编号", required = true, example = "1")
-    @ApiOperation(value = "弃置卡牌", notes = "根据url的id来指定更新对象，并根据传过来的卡牌信息将其置入弃牌堆")
-    public CardHeap abandonCard(@PathVariable Long id, @RequestBody Card card) {
+    @ApiOperation(value = "弃置暗置卡牌", notes = "根据url的id来指定更新对象，并根据传过来的卡牌信息将其置入弃牌堆")
+    public CardHeap abandonCardFromCurrent(@PathVariable Long id, @RequestBody Card card) {
         CardHeap cardHeap = cardHeaps.get(id);
-        cardHeap.abandonCard(card);
+        cardHeap.abandonCardFromCurrentHeap(card);
+        return cardHeap;
+    }
+
+    @PutMapping("/{id}/abandon_exposed")
+    @ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "牌堆编号", required = true, example = "1")
+    @ApiOperation(value = "弃置明置卡牌", notes = "根据url的id来指定更新对象，并根据传过来的卡牌信息将其置入弃牌堆")
+    public CardHeap abandonCardFromExposed(@PathVariable Long id, @RequestBody Card card) {
+        CardHeap cardHeap = cardHeaps.get(id);
+        cardHeap.abandonCardFromCurrentExposedHeap(card);
         return cardHeap;
     }
 
@@ -51,6 +61,15 @@ public class CardController {
     public CardHeap exposeCard(@PathVariable Long id, @RequestBody Card card) {
         CardHeap cardHeap = cardHeaps.get(id);
         cardHeap.exposeCard(card);
+        return cardHeap;
+    }
+
+    @PutMapping("/{id}/hide")
+    @ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "牌堆编号", required = true, example = "1")
+    @ApiOperation(value = "暗置卡牌", notes = "根据url的id来指定更新对象，并根据传过来的卡牌信息将其暗置")
+    public CardHeap hideCard(@PathVariable Long id, @RequestBody Card card) {
+        CardHeap cardHeap = cardHeaps.get(id);
+        cardHeap.hideCard(card);
         return cardHeap;
     }
 
