@@ -40,46 +40,46 @@ public class CardController {
     @PutMapping("/{id}/abandon_current")
     @ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "牌堆编号", required = true, example = "1")
     @ApiOperation(value = "弃置暗置卡牌", notes = "根据url的id来指定更新对象，并根据传过来的卡牌信息将其置入弃牌堆")
-    public CardHeap abandonCardFromCurrent(@PathVariable Long id, @RequestBody Card card) {
+    public String abandonCardFromCurrent(@PathVariable Long id, @RequestBody Card card) {
         CardHeap cardHeap = cardHeaps.get(id);
         cardHeap.abandonCardFromCurrentHeap(card);
-        return cardHeap;
+        return "success";
     }
 
     @PutMapping("/{id}/abandon_exposed")
     @ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "牌堆编号", required = true, example = "1")
     @ApiOperation(value = "弃置明置卡牌", notes = "根据url的id来指定更新对象，并根据传过来的卡牌信息将其置入弃牌堆")
-    public CardHeap abandonCardFromExposed(@PathVariable Long id, @RequestBody Card card) {
+    public String abandonCardFromExposed(@PathVariable Long id, @RequestBody Card card) {
         CardHeap cardHeap = cardHeaps.get(id);
         cardHeap.abandonCardFromCurrentExposedHeap(card);
-        return cardHeap;
+        return "success";
     }
 
     @PutMapping("/{id}/expose")
     @ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "牌堆编号", required = true, example = "1")
     @ApiOperation(value = "明置卡牌", notes = "根据url的id来指定更新对象，并根据传过来的卡牌信息将其明置")
-    public CardHeap exposeCard(@PathVariable Long id, @RequestBody Card card) {
+    public String exposeCard(@PathVariable Long id, @RequestBody Card card) {
         CardHeap cardHeap = cardHeaps.get(id);
         cardHeap.exposeCard(card);
-        return cardHeap;
+        return "success";
     }
 
     @PutMapping("/{id}/hide")
     @ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "牌堆编号", required = true, example = "1")
     @ApiOperation(value = "暗置卡牌", notes = "根据url的id来指定更新对象，并根据传过来的卡牌信息将其暗置")
-    public CardHeap hideCard(@PathVariable Long id, @RequestBody Card card) {
+    public String hideCard(@PathVariable Long id, @RequestBody Card card) {
         CardHeap cardHeap = cardHeaps.get(id);
         cardHeap.hideCard(card);
-        return cardHeap;
+        return "success";
     }
 
     @PutMapping("/{id}/refresh")
     @ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "牌堆编号", required = true, example = "1")
     @ApiOperation(value = "刷新牌堆", notes = "将弃牌堆的所有牌加入牌堆")
-    public CardHeap refreshCard(@PathVariable Long id) {
+    public String refreshCard(@PathVariable Long id) {
         CardHeap cardHeap = cardHeaps.get(id);
         cardHeap.refreshCard();
-        return cardHeap;
+        return "success";
     }
 
     @DeleteMapping("/{id}")
